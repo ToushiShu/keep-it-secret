@@ -1,0 +1,8 @@
+{
+  "database": {
+    "connectionString": "mongodb://localhost:27017/keep-it-secret-test"
+  },
+  "server": {
+    "port": 4000
+  }
+}
