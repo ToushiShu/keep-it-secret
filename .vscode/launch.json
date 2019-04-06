@@ -1,0 +1,33 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start and Debug",
+            "preLaunchTask": "build-ts",
+            "timeout": 10000,
+            "program": "${workspaceFolder}/src/index.ts",
+            "restart": true,
+            "cwd": "${workspaceRoot}",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "sourceMaps": true,
+            "env": {
+                "NODE_ENV": "dev"
+            }
+        },
+        {
+            "name": "Attach to Process",
+            "type": "node",
+            "request": "attach",
+            "restart": true,
+            "port": 5858,
+            "sourceMaps": true
+          }
+    ]
+}
