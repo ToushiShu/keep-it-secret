@@ -19,8 +19,6 @@ export default class Database {
 
     private static instance: Database;
 
-    private _db: Connection;
-
     private _models: IModels;
 
     /**
@@ -56,29 +54,13 @@ export default class Database {
     /**
      * Connect to MongoDB.
      */
-    private connectToDb(connectionString: string) {
+    private async connectToDb(connectionString: string) {
         (<any>mongoose).Promise = Promise;
 
         try {
-            mongoose.connect(connectionString, { useNewUrlParser: true, useFindAndModify: false });
+            await mongoose.connect(connectionString, { useNewUrlParser: true, useFindAndModify: false });
         } catch (err) {
             console.error(err);
         }
-    }
-
-    /**
-     * Mongoose has connected.
-     * Fired when database fires "open" event.
-     */
-    private connected() {
-        console.log("Mongoose has connected");
-    }
-
-    /**
-     * Mongoose has failed to connect.
-     * Fired when database fires "error" event.
-     */
-    private error(error: string) {
-        console.log("Mongoose has failed", error);
     }
 }
