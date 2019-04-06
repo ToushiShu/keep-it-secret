@@ -9,6 +9,9 @@ export default class UserRoutes {
     private _router: Router;
     private _controller: UserController;
 
+    /**
+     * Router getter.
+     */
     public get Router() {
         return this._router;
     }
