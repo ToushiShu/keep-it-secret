@@ -1,14 +1,23 @@
 import nconf from "nconf";
 import path from "path";
 
+/**
+ * config.(dev|test).json database file structure.
+ */
 export interface DbConfiguration {
     connectionString: string;
 }
 
+/**
+ * config.(dev|test).json server file structure.
+ */
 export interface ServerConfiguration {
     port: string;
 }
 
+/**
+ * Import Configs to get app configuration.
+ */
 export class Configs {
 
     // Read Configurations
@@ -21,10 +30,16 @@ export class Configs {
         }
     });
 
+    /**
+     * Database configuration.
+     */
     static getDatabaseConfig(): DbConfiguration {
         return this.configs.get("database");
     }
 
+    /**
+     * Server configuration.
+     */
     static getServerConfigs(): ServerConfiguration {
         return this.configs.get("server");
     }
