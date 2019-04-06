@@ -1,27 +1,43 @@
+// Modules
 import express from "express";
+import compression from "compression";  // compresses requests
+import bodyParser from "body-parser";
+import expressValidator from "express-validator";
+
+import InitUserRoutes from "./api/users";
 
 /**
  * server class for building and starting express.
  */
 export default class Server {
-    private port: string;
-    private app: express.Express;
+    private _port: string;
+    private _app: express.Express;
 
     /**
      * constructor.
      * @param port express port
      */
     constructor(port: string) {
-        this.port = port;
-        this.app = express();
+        this._port = port;
+        this._app = express();
+    }
+
+    /**
+     * Adds modules to express.
+     */
+    private addModules() {
+        this._app.use(compression());
+        this._app.use(bodyParser.json());
+        this._app.use(bodyParser.urlencoded({ extended: true }));
+        this._app.use(expressValidator());
     }
 
     /**
      * Define routes.
      */
     private buildRoutes() {
-        // Route for '/'
-        this.app.get("/", (req, res) => res.send("Hello World!"));
+        // User routes
+        InitUserRoutes(this._app);
     }
 
     /**
@@ -29,15 +45,17 @@ export default class Server {
      */
     private listen() {
         // Listen to requests
-        this.app.listen(this.port, () => console.log(`App listening on port ${this.port}!`));
+        this._app.listen(this._port, () => console.log(`App listening on port ${this._port}!`));
     }
 
     /**
      * start express server.
-     * step 1 : build routes.
-     * step 2 : listen for requests.
+     * step 1 : add modules to express.
+     * step 2 : build routes.
+     * step 3 : listen for requests.
      */
     public start() {
+        this.addModules();
         this.buildRoutes();
         this.listen();
     }
