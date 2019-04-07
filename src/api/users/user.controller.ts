@@ -4,8 +4,9 @@ import { Request, Response } from "express";
 import Database from "../../database";
 import MainController from "../MainController";
 import RESPONSE_CODES from "../utils/response-codes";
-import { cryptPassword, comparePassword } from "./utils/password-utils";
+import { encrypt, compareStr } from "../utils/password-utils";
 import { createToken } from "./utils/jwt-helper";
+import JWTPayload from "../interfaces/jwt-payload.interface";
 
 /**
  * User controller.
@@ -15,7 +16,7 @@ export default class UserController extends MainController {
     /**
      * @inheritdoc
      */
-    public async getAll(req: Request, res: Response): Promise<Response> {
+    public async getAll(req: Request & JWTPayload, res: Response): Promise<Response> {
         let users: any;
 
         try {
@@ -31,7 +32,7 @@ export default class UserController extends MainController {
     /**
      * @inheritdoc
      */
-    public async getOneById(req: Request, res: Response): Promise<Response> {
+    public async getOneById(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -57,7 +58,7 @@ export default class UserController extends MainController {
     /**
      * @inheritdoc
      */
-    public async create(req: Request, res: Response): Promise<Response> {
+    public async create(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -80,7 +81,7 @@ export default class UserController extends MainController {
     /**
      * @inheritdoc
      */
-    public async delete(req: Request, res: Response): Promise<Response> {
+    public async delete(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -100,7 +101,7 @@ export default class UserController extends MainController {
     /**
      * @inheritdoc
      */
-    public async update(req: Request, res: Response): Promise<Response> {
+    public async update(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -108,7 +109,7 @@ export default class UserController extends MainController {
 
         const id = req.body.id;
 
-        const hash = await cryptPassword(req.body.password);
+        const hash = await encrypt(req.body.password);
 
         const user = {
             email: req.body.email,
@@ -173,7 +174,7 @@ export default class UserController extends MainController {
         let token = undefined;
         try {
             const user = await Database.Models.User.findOne({ email: reqBody.email });
-            const passwordMatched = comparePassword(reqBody.password, user.hash);
+            const passwordMatched = compareStr(reqBody.password, user.hash);
             if (!passwordMatched) {
                 throw new Error("Invalid credentials");
             }
@@ -197,7 +198,7 @@ export default class UserController extends MainController {
         if (existingUser) {
             throw new Error("Email already used");
         }
-        const hash = await cryptPassword(reqBody.password);
+        const hash = await encrypt(reqBody.password);
         const user = new Database.Models.User({
             email: reqBody.email,
             hash: hash

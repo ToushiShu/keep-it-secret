@@ -5,9 +5,6 @@ import { check, ValidationChain } from "express-validator/check";
  */
 export default class PostValidator {
     private static _validators: ValidationChain[] = [
-        check("author")
-            .not().isEmpty()
-            .trim(),
         check("message")
             .not().isEmpty()
             .trim()

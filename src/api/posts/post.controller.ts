@@ -4,6 +4,8 @@ import { Request, Response } from "express";
 import Database from "../../database";
 import MainController from "../MainController";
 import RESPONSE_CODES from "../utils/response-codes";
+import JWTPayload from "../interfaces/jwt-payload.interface";
+import { encrypt } from "../utils/password-utils";
 
 /**
  * Post controller.
@@ -13,9 +15,8 @@ export default class PostController extends MainController {
     /**
      * @inheritdoc
      */
-    public async getAll(req: Request, res: Response): Promise<Response> {
+    public async getAll(req: Request & JWTPayload, res: Response): Promise<Response> {
         let posts: any;
-
         try {
             posts = await Database.Models.Post.find().lean(true);
         } catch (err) {
@@ -28,7 +29,7 @@ export default class PostController extends MainController {
     /**
      * @inheritdoc
      */
-    public async getOneById(req: Request, res: Response): Promise<Response> {
+    public async getOneById(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = PostController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -53,18 +54,21 @@ export default class PostController extends MainController {
     /**
      * @inheritdoc
      */
-    public async create(req: Request, res: Response): Promise<Response> {
+    public async create(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = PostController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
         }
 
+        const post = new Database.Models.Post({
+            author: req.user.email,
+            message: req.body.message
+        });
+
         try {
-            const post = new Database.Models.Post({
-                author: req.body.author,
-                message: req.body.message,
-                encryptedMessage: req.body.encryptedMessage
-            });
+            const encryptedMessage = await encrypt(req.body.message);
+
+            post.encryptedMessage = encryptedMessage;
 
             await post.save();
 
@@ -72,13 +76,13 @@ export default class PostController extends MainController {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
 
-        return res.status(RESPONSE_CODES.VALID.code).json({ status: "ok" });
+        return res.status(RESPONSE_CODES.VALID.code).json(post);
     }
 
     /**
      * @inheritdoc
      */
-    public async delete(req: Request, res: Response): Promise<Response> {
+    public async delete(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = PostController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
@@ -98,26 +102,28 @@ export default class PostController extends MainController {
     /**
      * @inheritdoc
      */
-    public async update(req: Request, res: Response): Promise<Response> {
+    public async update(req: Request & JWTPayload, res: Response): Promise<Response> {
         const errors = PostController.validateRequest(req, res);
         if (errors) {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
         }
 
         const id = req.body.id;
-
         const post = {
-            author: req.body.author,
+            author: req.user.email,
             message: req.body.message,
-            encryptedMessage: req.body.encryptedMessage
+            encryptedMessage: ""
         };
 
         try {
+            const encryptedMessage = await encrypt(req.body.message);
+            post.encryptedMessage = encryptedMessage;
+
             await Database.Models.Post.findByIdAndUpdate(id, post);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
 
-        return res.status(RESPONSE_CODES.VALID.code).json({ status: "ok" });
+        return res.status(RESPONSE_CODES.VALID.code).json(post);
     }
 }
