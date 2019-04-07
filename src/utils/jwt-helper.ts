@@ -8,6 +8,8 @@ import { Configs } from "../configurations";
  * @param payload Data being sent to consumer.
  */
 export function createToken(payload: any) {
-    const token = jwt.sign(payload, Configs.getServerConfigs().secretKey, { expiresIn: 1440 });
+    // secret key
+    const secret = process.env["SECRET"] || Configs.getServerConfigs().secretKey;
+    const token = jwt.sign(payload, secret, { expiresIn: 1440 });
     return token;
 }

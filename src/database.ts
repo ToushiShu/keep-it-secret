@@ -38,7 +38,8 @@ export default class Database {
      * step 2 : build models.
      */
     constructor() {
-        this.connectToDb(Configs.getDatabaseConfig().connectionString);
+        const connectionString = process.env["CONNECTION_STRING"] || Configs.getDatabaseConfig().connectionString;
+        this.connectToDb(connectionString);
         this.buildModels();
     }
 

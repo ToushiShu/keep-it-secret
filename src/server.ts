@@ -36,7 +36,7 @@ export default class Server {
         this._app.use(expressValidator());
         // Authentication is mandatory except for signing up and logging in
         this._app.use(expressJwt({ secret: this._secret })
-            .unless({ path: ["/api/users/signUp", "/api/users/logIn"] })
+            .unless({ path: ["/api/users/signup", "/api/users/login"] })
         );
     }
 
