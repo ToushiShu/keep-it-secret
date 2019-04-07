@@ -7,6 +7,11 @@ import { validationResult } from "express-validator/check";
  */
 export default abstract class MainController {
 
+    /**
+     * Validate request according to validation middleware.
+     * @param req Request.
+     * @param res Response.
+     */
     protected static validateRequest(req: Request, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

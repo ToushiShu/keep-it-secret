@@ -19,6 +19,7 @@ export default class UserController extends MainController {
         let users: any;
 
         try {
+            // Never get hash
             users = await Database.Models.User.find().lean(true).select("-hash");
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
@@ -40,6 +41,7 @@ export default class UserController extends MainController {
         let user: any;
 
         try {
+            // Never get hash
             user = await Database.Models.User.findById(id).lean(true).select("-hash");
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
@@ -122,6 +124,11 @@ export default class UserController extends MainController {
         return res.status(RESPONSE_CODES.VALID.code).json({ status: "ok" });
     }
 
+    /**
+     * Sign up user and return JWT.
+     * @param req Request
+     * @param res Response
+     */
     public async singUp(req: Request, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
@@ -147,6 +154,11 @@ export default class UserController extends MainController {
         return res.status(RESPONSE_CODES.VALID.code).json({ token: token });
     }
 
+    /**
+     * Log in user and return JWT.
+     * @param req Request
+     * @param res Response
+     */
     public async logIn(req: Request, res: Response): Promise<Response> {
         const errors = UserController.validateRequest(req, res);
         if (errors) {
@@ -177,6 +189,7 @@ export default class UserController extends MainController {
 
     /**
      * Save a new user to database if it doesn't exist.
+     * Otherwise, throw error.
      * @param reqBody { email: string, password: string }
      */
     private static async saveNewUser(reqBody: { email: string; password: string; }) {
