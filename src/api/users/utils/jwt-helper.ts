@@ -1,7 +1,7 @@
 // Modules
 import jwt from "jsonwebtoken";
 
-import { Configs } from "../configurations";
+import { Configs } from "../../../configurations";
 
 /**
  * Create JWT.

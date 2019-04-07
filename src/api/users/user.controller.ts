@@ -3,9 +3,9 @@ import { Request, Response } from "express";
 
 import Database from "../../database";
 import MainController from "../MainController";
-import RESPONSE_CODES from "../../utils/response-codes";
-import { cryptPassword, comparePassword } from "../../utils/password-utils";
-import { createToken } from "../../utils/jwt-helper";
+import RESPONSE_CODES from "./utils/response-codes";
+import { cryptPassword, comparePassword } from "./utils/password-utils";
+import { createToken } from "./utils/jwt-helper";
 
 /**
  * User controller.
