@@ -3,6 +3,7 @@ import express from "express";
 import compression from "compression";  // compresses requests
 import bodyParser from "body-parser";
 import expressValidator from "express-validator";
+import expressJwt from "express-jwt";
 
 import InitUserRoutes from "./api/users";
 
@@ -11,14 +12,17 @@ import InitUserRoutes from "./api/users";
  */
 export default class Server {
     private _port: string;
+    private _secret: string;
     private _app: express.Express;
 
     /**
      * constructor.
-     * @param port express port
+     * @param port express port.
+     * @param secret secret for JWT.
      */
-    constructor(port: string) {
+    constructor(port: string, secret: string) {
         this._port = port;
+        this._secret = secret;
         this._app = express();
     }
 
@@ -30,6 +34,10 @@ export default class Server {
         this._app.use(bodyParser.json());
         this._app.use(bodyParser.urlencoded({ extended: true }));
         this._app.use(expressValidator());
+        // Authentication is mandatory except for signing up and logging in
+        this._app.use(expressJwt({ secret: this._secret })
+            .unless({ path: ["/api/users/signUp", "/api/users/logIn"] })
+        );
     }
 
     /**

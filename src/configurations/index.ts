@@ -13,6 +13,7 @@ export interface DbConfiguration {
  */
 export interface ServerConfiguration {
     port: string;
+    secretKey: string;
 }
 
 /**

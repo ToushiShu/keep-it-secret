@@ -3,6 +3,7 @@
     "connectionString": "mongodb://localhost:27017/keep-it-secret-test"
   },
   "server": {
-    "port": 4000
+    "port": 4000,
+    "secretKey": "j45wdi5rfXCHd4wo-f2gmkWDRHxc54485sr0td1x65@"
   }
 }

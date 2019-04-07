@@ -5,7 +5,7 @@ import { Schema, model, Document, Model } from "mongoose";
  */
 declare interface IUser extends Document {
     email: string;
-    password: string;
+    hash: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -28,7 +28,7 @@ export class User {
     constructor() {
         const schema = new Schema({
             email: { type: String, required: true },
-            password: { type: String, required: true }
+            hash: { type: String, required: true }
         }, { timestamps: true });
 
         this._model = model<IUser>("User", schema);

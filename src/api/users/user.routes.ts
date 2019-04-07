@@ -36,6 +36,8 @@ export default class UserRoutes {
         this._router.delete("/:id", this._controller.delete);
         this._router.post("/", UserValidator.Validators, this._controller.create);
         this._router.put("/", UserValidator.Validators, this._controller.update);
+        this._router.post("/signUp", UserValidator.Validators, this._controller.singUp);
+        this._router.post("/logIn", UserValidator.Validators, this._controller.logIn);
     }
 
 }
