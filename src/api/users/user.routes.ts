@@ -1,5 +1,6 @@
 import { Router } from "express";
 import UserController from "./user.controller";
+import UserValidator from "./user.validator";
 
 /**
  * user routes class.
@@ -33,8 +34,8 @@ export default class UserRoutes {
         this._router.get("/", this._controller.getAll);
         this._router.get("/:id", this._controller.getOneById);
         this._router.delete("/:id", this._controller.delete);
-        this._router.post("/", this._controller.create);
-        this._router.put("/", this._controller.update);
+        this._router.post("/", UserValidator.Validators, this._controller.create);
+        this._router.put("/", UserValidator.Validators, this._controller.update);
     }
 
 }
