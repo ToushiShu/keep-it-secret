@@ -6,6 +6,7 @@ import expressValidator from "express-validator";
 import expressJwt from "express-jwt";
 
 import InitUserRoutes from "./api/users";
+import InitPostRoutes from "./api/posts";
 
 /**
  * server class for building and starting express.
@@ -46,6 +47,8 @@ export default class Server {
     private buildRoutes() {
         // User routes
         InitUserRoutes(this._app);
+        // Post routes
+        InitPostRoutes(this._app);
     }
 
     /**

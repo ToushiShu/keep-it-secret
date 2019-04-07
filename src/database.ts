@@ -1,13 +1,14 @@
 import mongoose, { Connection, connection } from "mongoose";
 import { Configs } from "./configurations";
 import { UserModel, User } from "./api/users/user.model";
+import { PostModel, Post } from "./api/posts/post.model";
 
 /**
  * List every models.
  */
 declare interface IModels {
     User: UserModel;
-
+    Post: PostModel;
 }
 
 /**
@@ -48,7 +49,8 @@ export default class Database {
      */
     private buildModels() {
         this._models = {
-            User: new User().model
+            User: new User().model,
+            Post: new Post().model
         };
     }
 

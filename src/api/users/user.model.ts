@@ -27,7 +27,7 @@ export class User {
      */
     constructor() {
         const schema = new Schema({
-            email: { type: String, required: true },
+            email: { type: String, required: true, unique: true },
             hash: { type: String, required: true }
         }, { timestamps: true });
 
