@@ -1,8 +1,8 @@
 // Modules
 import { Request, Response } from "express";
 
-import Database from "../../database";
 import MainController from "../MainController";
+import User from "./user.model";
 import RESPONSE_CODES from "../utils/response-codes";
 import { encrypt, compareStr } from "../utils/password-utils";
 import { createToken } from "./utils/jwt-helper";
@@ -21,7 +21,7 @@ export default class UserController extends MainController {
 
         try {
             // Never get hash
-            users = await Database.Models.User.find().lean(true).select("-hash");
+            users = await User.find().lean(true).select("-hash");
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -43,7 +43,7 @@ export default class UserController extends MainController {
 
         try {
             // Never get hash
-            user = await Database.Models.User.findById(id).lean(true).select("-hash");
+            user = await User.findById(id).lean(true).select("-hash");
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -90,7 +90,7 @@ export default class UserController extends MainController {
         const id = req.params.id;
 
         try {
-            await Database.Models.User.findOneAndDelete(id);
+            await User.findOneAndDelete(id);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -117,7 +117,7 @@ export default class UserController extends MainController {
         };
 
         try {
-            await Database.Models.User.findByIdAndUpdate(id, user);
+            await User.findByIdAndUpdate(id, user);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -173,7 +173,7 @@ export default class UserController extends MainController {
 
         let token = undefined;
         try {
-            const user = await Database.Models.User.findOne({ email: reqBody.email });
+            const user = await User.findOne({ email: reqBody.email });
             const passwordMatched = compareStr(reqBody.password, user.hash);
             if (!passwordMatched) {
                 throw new Error("Invalid credentials");
@@ -194,12 +194,12 @@ export default class UserController extends MainController {
      * @param reqBody { email: string, password: string }
      */
     private static async saveNewUser(reqBody: { email: string; password: string; }) {
-        const existingUser = await Database.Models.User.findOne({ email: reqBody.email });
+        const existingUser = await User.findOne({ email: reqBody.email });
         if (existingUser) {
             throw new Error("Email already used");
         }
         const hash = await encrypt(reqBody.password);
-        const user = new Database.Models.User({
+        const user = new User({
             email: reqBody.email,
             hash: hash
         });

@@ -1,8 +1,8 @@
 // Modules
 import { Request, Response } from "express";
 
-import Database from "../../database";
 import MainController from "../MainController";
+import Post from "./post.model";
 import RESPONSE_CODES from "../utils/response-codes";
 import JWTPayload from "../interfaces/jwt-payload.interface";
 import { encrypt } from "../utils/password-utils";
@@ -18,7 +18,7 @@ export default class PostController extends MainController {
     public async getAll(req: Request & JWTPayload, res: Response): Promise<Response> {
         let posts: any;
         try {
-            posts = await Database.Models.Post.find().lean(true);
+            posts = await Post.find().lean(true);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -39,7 +39,7 @@ export default class PostController extends MainController {
         let post: any;
 
         try {
-            post = await Database.Models.Post.findById(id).lean(true);
+            post = await Post.findById(id).lean(true);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -60,7 +60,7 @@ export default class PostController extends MainController {
             return res.status(RESPONSE_CODES.INVALID_REQUEST.code).json(errors);
         }
 
-        const post = new Database.Models.Post({
+        const post = new Post({
             author: req.user.email,
             message: req.body.message
         });
@@ -91,7 +91,7 @@ export default class PostController extends MainController {
         const id = req.params.id;
 
         try {
-            await Database.Models.Post.findOneAndDelete(id);
+            await Post.findOneAndDelete(id);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }
@@ -119,7 +119,7 @@ export default class PostController extends MainController {
             const encryptedMessage = await encrypt(req.body.message);
             post.encryptedMessage = encryptedMessage;
 
-            await Database.Models.Post.findByIdAndUpdate(id, post);
+            await Post.findByIdAndUpdate(id, post);
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }

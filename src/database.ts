@@ -1,15 +1,5 @@
-import mongoose, { Connection, connection } from "mongoose";
+import mongoose from "mongoose";
 import { Configs } from "./configurations";
-import { UserModel, User } from "./api/users/user.model";
-import { PostModel, Post } from "./api/posts/post.model";
-
-/**
- * List every models.
- */
-declare interface IModels {
-    User: UserModel;
-    Post: PostModel;
-}
 
 /**
  * Database class.
@@ -18,50 +8,23 @@ declare interface IModels {
  */
 export default class Database {
 
-    private static instance: Database;
-
-    private _models: IModels;
-
-    /**
-     * models getter.
-     * Creates a Database instance if there is none.
-     */
-    public static get Models() {
-        if (!Database.instance) {
-            Database.instance = new Database();
-        }
-        return Database.instance._models;
-    }
-
+    private connectionString: string;
     /**
      * constructor.
-     * step 1 : connect to database.
-     * step 2 : build models.
      */
-    constructor() {
-        const connectionString = process.env["CONNECTION_STRING"] || Configs.getDatabaseConfig().connectionString;
-        this.connectToDb(connectionString);
-        this.buildModels();
-    }
-
-    /**
-     * Define models.
-     */
-    private buildModels() {
-        this._models = {
-            User: new User().model,
-            Post: new Post().model
-        };
+    constructor(connectionString: string) {
+        this.connectionString = connectionString;
     }
 
     /**
      * Connect to MongoDB.
      */
-    private async connectToDb(connectionString: string) {
+    public async start() {
         (<any>mongoose).Promise = Promise;
 
         try {
-            await mongoose.connect(connectionString, { useNewUrlParser: true, useFindAndModify: false });
+            await mongoose.connect(this.connectionString, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true });
+            console.log(`Connected to ${this.connectionString}`);
         } catch (err) {
             console.error(err);
         }
