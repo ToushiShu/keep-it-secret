@@ -15,7 +15,8 @@
     "watch:debug": "nodemon -e ts,tsx --exec npm run start:debug",
     "serve-debug": "nodemon --inspect dist/index.js",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
-    "configs": "copyfiles -u 1 src/configurations/*.json dist"
+    "configs": "copyfiles -u 1 src/configurations/*.json dist",
+    "test": "cross-env NODE_ENV=test ts-mocha --timeout 5000 -p tsconfig.json src/test/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -54,9 +55,14 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.6",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
+    "expect": "^24.7.1",
+    "mocha": "^6.1.2",
     "nodemon": "^1.18.10",
+    "ts-mocha": "^6.0.0",
     "tslint": "^5.15.0",
     "typescript": "^3.4.2"
   }

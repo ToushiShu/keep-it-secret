@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 /**
  * Post interface.
  */
-declare interface IPost extends Document {
+export declare interface IPost extends Document {
     author: string;
     message: string;
     encryptedMessage: string;
