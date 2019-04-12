@@ -2,6 +2,7 @@ import { Configs } from "../../configurations";
 import mongoose from "mongoose";
 import Post from "../../api/posts/post.model";
 import expect from "expect";
+import { describe } from "mocha";
 
 describe("Post model", () => {
 
@@ -23,8 +24,6 @@ describe("Post model", () => {
     });
 
     it("Should save a post", async () => {
-        expect.assertions(2);
-
         const author = "Tony";
 
         const post = new Post({

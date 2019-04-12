@@ -119,7 +119,7 @@ export default class PostController extends MainController {
             const encryptedMessage = await encrypt(req.body.message);
             post.encryptedMessage = encryptedMessage;
 
-            await Post.findByIdAndUpdate(id, post);
+            await Post.findOneAndUpdate(id, post, {new: true, upsert: true});
         } catch (err) {
             return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
         }

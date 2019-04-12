@@ -2,6 +2,7 @@ import { Configs } from "../../configurations";
 import mongoose from "mongoose";
 import User from "../../api/users/user.model";
 import expect from "expect";
+import { describe } from "mocha";
 
 describe("User model", () => {
 
@@ -23,8 +24,6 @@ describe("User model", () => {
     });
 
     it("Should save a user", async () => {
-        expect.assertions(2);
-
         const email = "tony_tang@test.com";
 
         const user = new User({
