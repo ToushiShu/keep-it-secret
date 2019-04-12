@@ -15,6 +15,7 @@ export default abstract class MainController {
      */
     protected static validateRequest(req: Request, res: Response) {
         const errors = validationResult(req);
+        console.log("err", errors.array());
         if (!errors.isEmpty()) {
             return {
                 errors: errors.array()

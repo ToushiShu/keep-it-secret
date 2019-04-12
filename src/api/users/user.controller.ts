@@ -174,15 +174,16 @@ export default class UserController extends MainController {
         let token = undefined;
         try {
             const user = await User.findOne({ email: reqBody.email });
-            const passwordMatched = compareStr(reqBody.password, user.hash);
+            const passwordMatched = await compareStr(reqBody.password, user.hash);
             if (!passwordMatched) {
+                console.log("error");
                 throw new Error("Invalid credentials");
             }
             token = await createToken({
                 email: reqBody.email
             });
         } catch (err) {
-            return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json(err);
+            return res.status(RESPONSE_CODES.INTERNAL_ERROR.code).json({ error: err.message });
         }
 
         return res.status(RESPONSE_CODES.VALID.code).json({ token: token });

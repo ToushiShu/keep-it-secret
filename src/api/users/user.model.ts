@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 /**
  * User interface.
  */
-declare interface IUser extends Document {
+export declare interface IUser extends Document {
     email: string;
     hash: string;
     createdAt: Date;

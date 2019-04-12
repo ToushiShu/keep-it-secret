@@ -6,7 +6,6 @@ import httpMocks from "node-mocks-http";
 import PostController from "../../../src/api/posts/post.controller";
 import { Request } from "express";
 import JWTPayload from "../../../src/api/interfaces/jwt-payload.interface";
-import { describe } from "mocha";
 
 const API_ROUTE = "/api/posts";
 const AUTHOR = "tony.tang@test.com";
@@ -84,13 +83,13 @@ describe("Post controller", () => {
         await postController.getOneById(request, response);
         const data: IPost = JSON.parse(response._getData());
 
-        expect(post).toMatchObject(
+        expect(data).toMatchObject(
             {
                 author: expect.any(String),
                 message: expect.any(String),
                 encryptedMessage: expect.any(String),
-                createdAt: expect.any(Date),
-                updatedAt: expect.any(Date)
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String)
             }
         );
 
@@ -184,9 +183,7 @@ describe("Post controller", () => {
             {
                 author: expect.any(String),
                 message: expect.any(String),
-                encryptedMessage: expect.any(String),
-                createdAt: expect.any(String),
-                updatedAt: expect.any(String)
+                encryptedMessage: expect.any(String)
             }
         );
 

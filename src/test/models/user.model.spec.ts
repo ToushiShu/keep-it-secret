@@ -2,7 +2,6 @@ import { Configs } from "../../configurations";
 import mongoose from "mongoose";
 import User from "../../api/users/user.model";
 import expect from "expect";
-import { describe } from "mocha";
 
 describe("User model", () => {
 
